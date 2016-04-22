@@ -1,0 +1,7 @@
+app:
+  image: ultrayoshi/elixir
+  working_dir: /code
+  env_file: .env
+  volumes:
+    - .:/code
+    - .hex:/root/.hex
