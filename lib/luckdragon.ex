@@ -1,11 +1,11 @@
 defmodule Luckdragon do
-  alias Luckdragon.Transformer
-  alias Luckdragon.DockerCloud
+  alias Luckdragon.Store
+  alias Luckdragon.Nginx.Server
+  alias Luckdragon.DockerCloud.Api
 
   def run do
-    Transformer.start_link []
-
-    DockerCloud.Api.get_containers
-    |> Enum.map(&Transformer.transform(&1))
+    Api.get_containers
+    |> Enum.map(&Server.build_from_container(&1))
+    |> Store.start_link
   end
 end
