@@ -17,4 +17,9 @@ nginx:
   restart: always
   volumes_from:
     - luckdragon
-
+proxy-example:
+  image: 'nginx:latest'
+  environment:
+    - LUCKDRAGON_SERVER_NAME=example.org
+    - LUCKDRAGON_UPSTREAM_NAME=example
+    - LUCKDRAGON_PROXY_PORT=80
