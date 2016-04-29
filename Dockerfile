@@ -7,6 +7,7 @@ ADD . $APP_HOME
 
 RUN mix hex.info
 RUN mix deps.get
+RUN yes | mix deps.compile
 RUN mix escript.build
 
 ENTRYPOINT ["./luckdragon"]
