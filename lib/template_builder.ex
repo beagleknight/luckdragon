@@ -1,6 +1,6 @@
 defmodule Luckdragon.TemplateBuilder do
   @src_file "templates/nginx.conf.eex"
-  @out_file "/etc/nginx/nginx.conf"
+  @out_file "/etc/nginx/conf.d/luckdragon.conf"
 
   def build(servers) do
     File.mkdir_p "/etc/nginx"
