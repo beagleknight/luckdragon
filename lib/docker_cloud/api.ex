@@ -43,7 +43,7 @@ defmodule Luckdragon.DockerCloud.Api do
         |> Map.take(["private_ip", "container_envvars"])
         |> Container.build_from_api
       {:error, reason} ->
-        IO.puts "An error ocurred while fetching containers:"
+        IO.puts "An error ocurred while fetching a container:"
         IO.puts reason
     end
   end
@@ -55,7 +55,7 @@ defmodule Luckdragon.DockerCloud.Api do
         |> Poison.decode!
         |> Map.take(["containers"])
       {:error, reason} ->
-        IO.puts "An error ocurred while fetching containers:"
+        IO.puts "An error ocurred while fetching a service:"
         IO.puts reason
     end
   end
@@ -72,7 +72,7 @@ defmodule Luckdragon.DockerCloud.Api do
         |> get_service
         |> Map.get("containers")
       {:error, reason} ->
-        IO.puts "An error ocurred while fetching containers:"
+        IO.puts "An error ocurred while fetching nginx containers:"
         IO.puts reason
     end
   end
