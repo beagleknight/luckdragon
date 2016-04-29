@@ -4,8 +4,12 @@ defmodule Luckdragon do
   alias Luckdragon.DockerCloud.Api
 
   def run do
+    Store.start_link []
+
     Api.get_containers
     |> Enum.map(&Server.build_from_container(&1))
-    |> Store.start_link
+    |> Enum.each(&Store.add(&1))
+
+    Api.listen_events
   end
 end

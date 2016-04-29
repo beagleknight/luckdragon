@@ -1,9 +1,22 @@
 defmodule Luckdragon.DockerCloud.Api do
+  alias Luckdragon.Events
+  alias Luckdragon.Processor
   alias Luckdragon.DockerCloud.Container
 
   @wss_address "ws.cloud.docker.com"
   @api_address "https://cloud.docker.com"
   @api_key System.get_env("DOCKERCLOUD_AUTH")
+
+  def listen_events do
+    Events.start_link []
+    spawn_link(Processor, :process, [])
+
+    path = "/api/audit/v1/events"
+    socket = Socket.Web.connect! @wss_address, path: path, api_key: @api_key, secure: true, custom_headers: %{Authorization: @api_key}
+
+    socket
+    |> receive_message
+  end
 
   def get_containers do
     case request("/api/app/v1/container/") do
@@ -45,28 +58,20 @@ defmodule Luckdragon.DockerCloud.Api do
         {:error, body}
     end
   end
+
+  defp receive_message(socket) do
+    case socket |> Socket.Web.recv! do
+      {:text, data} ->
+        data
+        |> Poison.Parser.parse!
+        |> Events.enqueue
+        receive_message(socket)
+      {:close, _, _} ->
+        IO.puts "Websocket connection closed"
+    end
+  end
 end
 
-#defp receive_message(socket) do
-#  case socket |> Socket.Web.recv! do
-#    {:text, data} ->
-#      #IO.puts "Data received #{data}"
-#      data
-#      |> Poison.Parser.parse!
-#      |> Events.enqueue
-#      receive_message(socket)
-#    {:close, _, _} ->
-#      IO.puts "Websocket connection closed"
-#  end
-#end
-#def listen_events do
-#  path = "/api/audit/v1/events"
-#  socket = Socket.Web.connect! @wss_address, path: path, api_key: @api_key, secure: true
-#
-#  socket
-#  |> receive_message
-#end
-#
 #def reload_nginx_container(uuid) do
 #  path = "/api/app/v1/container/#{uuid}/exec/?command=nginx%20-s%20reload"
 #  Socket.Web.connect! @wss_address, path: path, api_key: @api_key, secure: true

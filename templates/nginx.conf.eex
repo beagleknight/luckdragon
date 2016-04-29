@@ -40,7 +40,7 @@ server {
 <%= Enum.map servers, fn(server) -> %>
 upstream <%= server.upstream.name %> {
   <%= Enum.map server.upstream.proxies, fn(proxy) -> %>
-  server <%= proxy.address %>;
+  server <%= proxy.ip %>:<%= proxy.port %>;
   <% end %>
 }
 

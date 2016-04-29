@@ -5,4 +5,5 @@
   "metrics": {:hex, :metrics, "1.0.1"},
   "mimerl": {:hex, :mimerl, "1.0.2"},
   "poison": {:hex, :poison, "2.1.0"},
+  "socket": {:git, "https://github.com/beagleknight/elixir-socket.git", "40f3393b9be885208cb170499b52e5c267156793", [branch: 'connect-custom-headers']},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.0"}}

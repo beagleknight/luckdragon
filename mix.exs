@@ -29,7 +29,8 @@ defmodule Luckdragon.Mixfile do
   defp deps do
     [
       {:poison, "~> 2.0"},
-      {:httpoison, "~> 0.8.0"}
+      {:httpoison, "~> 0.8.0"},
+      {:socket, github: 'beagleknight/elixir-socket', branch: 'connect-custom-headers'}
     ]
   end
 end
