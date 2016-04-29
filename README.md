@@ -1,20 +1,26 @@
 # Luckdragon
 
-**TODO: Add description**
+[![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/)
 
-## Installation
+## Usage
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+This docker cloud stack contains two services:
 
-  1. Add luckdragon to your list of dependencies in `mix.exs`:
+- **luckdragon**: Use Docker Cloud API to fetch your proxies services and dynamically write nginx conf on `/etc/nginx/conf.d/luckdragon.conf`.
+- **nginx**: Basic nginx docker image. It mounts volumes from `luckdragon`.
 
-        def deps do
-          [{:luckdragon, "~> 0.0.1"}]
-        end
+A service will be visible for luckdragon if it contains these three environment variables:
 
-  2. Ensure luckdragon is started before your application:
+- **LUCKDRAGON_SERVER_NAME**: Proxy's server name. e.g. `games.beagleknight.com`
+- **LUCKDRAGON_UPSTREAM_NAME**: Upstream's identifier. e.g `games`
+- **LUCKDRAGON_PROXY_PORT**: Application's port. e.g. `80`
 
-        def application do
-          [applications: [:luckdragon]]
-        end
 
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/beagleknight/luckdragon. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
+
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

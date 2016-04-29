@@ -1,7 +1,20 @@
-app:
-  image: ultrayoshi/elixir
-  working_dir: /code
-  env_file: .env
+luckdragon:
+  image: 'ultrayoshi/luckdragon:latest'
+  autoredeploy: true
+  cpu_shares: 300
+  environment:
+    - LUCKDRAGON_NGINX_SERVICE_NAME=nginx
+  restart: always
+  roles:
+    - global
   volumes:
-    - .:/code
-    - .hex:/root/.hex
+    - /etc/nginx/conf.d
+nginx:
+  image: 'nginx:latest'
+  ports:
+    - '80:80'
+    - '443:443'
+  restart: always
+  volumes_from:
+    - luckdragon
+
