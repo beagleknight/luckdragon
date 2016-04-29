@@ -5,15 +5,13 @@ defmodule Luckdragon.DockerCloud.Api do
 
   @wss_address          "ws.cloud.docker.com"
   @api_address          "https://cloud.docker.com"
-  @api_key              System.get_env("DOCKERCLOUD_AUTH")
-  @nginx_service_name   System.get_env("LUCKDRAGON_NGINX_SERVICE_NAME")
 
   def listen_events do
     Events.start_link []
     spawn_link(Processor, :process, [])
 
     path = "/api/audit/v1/events"
-    socket = Socket.Web.connect! @wss_address, path: path, api_key: @api_key, secure: true, custom_headers: %{Authorization: @api_key}
+    socket = Socket.Web.connect! @wss_address, path: path, secure: true, custom_headers: %{Authorization: api_key}
 
     socket
     |> receive_message
@@ -66,7 +64,7 @@ defmodule Luckdragon.DockerCloud.Api do
         body
         |> Poison.decode!
         |> Map.get("objects")
-        |> Enum.filter(fn(s) -> Map.get(s, "name") === @nginx_service_name end)
+        |> Enum.filter(fn(s) -> Map.get(s, "name") === nginx_service_name end)
         |> List.first
         |> Map.get("resource_uri")
         |> get_service
@@ -79,12 +77,12 @@ defmodule Luckdragon.DockerCloud.Api do
 
   def reload_nginx_container(resource_uri) do
     path = "#{resource_uri}exec/?command=nginx%20-s%20reload"
-    Socket.Web.connect! @wss_address, path: path, api_key: @api_key, secure: true, custom_headers: %{Authorization: @api_key}
+    Socket.Web.connect! @wss_address, path: path, secure: true, custom_headers: %{Authorization: api_key}
   end
 
   defp request(url) do
     case HTTPoison.get("#{@api_address}#{url}", [
-      "Authorization": @api_key, 
+      "Authorization": api_key, 
       "Accept": "application/json"
     ]) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
@@ -104,5 +102,13 @@ defmodule Luckdragon.DockerCloud.Api do
       {:close, _, _} ->
         IO.puts "Websocket connection closed"
     end
+  end
+
+  defp api_key do
+    System.get_env("DOCKERCLOUD_AUTH")
+  end
+
+  defp nginx_service_name do
+    System.get_env("LUCKDRAGON_NGINX_SERVICE_NAME")
   end
 end
