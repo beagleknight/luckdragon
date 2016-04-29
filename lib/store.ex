@@ -9,30 +9,34 @@ defmodule Luckdragon.Store do
   def init(state), do: {:ok, state}
 
   def handle_cast({:add, server}, state) do
-    new_state = case Enum.any?(state, fn(s) -> server.name === s.name end) do
-      true -> state |> Enum.map(fn(s) ->
-                if server.name === s.name do
-                  proxy = server.upstream.proxies |> List.first
+    if server.name !== nil && server.name !== '' do
+      new_state = case Enum.any?(state, fn(s) -> server.name === s.name end) do
+        true -> state |> Enum.map(fn(s) ->
+                  if server.name === s.name do
+                    proxy = server.upstream.proxies |> List.first
 
-                  %Server{
-                    name: s.name,
-                    use_ssl: s.use_ssl,
-                    upstream: %Upstream{
-                      name: s.upstream.name,
-                      proxies: [proxy | s.upstream.proxies]
+                    %Server{
+                      name: s.name,
+                      use_ssl: s.use_ssl,
+                      upstream: %Upstream{
+                        name: s.upstream.name,
+                        proxies: [proxy | s.upstream.proxies]
+                      }
                     }
-                  }
-                else
-                  s
-                end
-              end)
-      _ ->
-         state ++ [server]
-    end
+                  else
+                    s
+                  end
+                end)
+        _ ->
+           state ++ [server]
+      end
 
-    TemplateBuilder.build(new_state)
-    Reloader.reload
-    {:noreply, new_state}
+      TemplateBuilder.build(new_state)
+      Reloader.reload
+      {:noreply, new_state}
+    else
+      {:noreply, state}
+    end
   end
 
   def handle_cast({:remove, server}, state) do

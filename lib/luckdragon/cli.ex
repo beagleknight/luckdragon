@@ -11,7 +11,6 @@ defmodule Luckdragon.CLI do
 
     Api.get_containers
     |> Enum.map(&Server.build_from_container(&1))
-    |> Enum.filter(fn(s) -> s.name !== nil && s.name !== '' end)
     |> Enum.each(&Store.add(&1))
 
     Api.listen_events
