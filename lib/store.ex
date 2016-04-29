@@ -1,5 +1,5 @@
 defmodule Luckdragon.Store do
-  alias Luckdragon.Nginx.{Server, Upstream}
+  alias Luckdragon.Nginx.{Reloader, Server, Upstream}
   alias Luckdragon.TemplateBuilder
 
   use GenServer
@@ -31,6 +31,7 @@ defmodule Luckdragon.Store do
     end
 
     TemplateBuilder.build(new_state)
+    Reloader.reload
     {:noreply, new_state}
   end
 
@@ -55,6 +56,7 @@ defmodule Luckdragon.Store do
     end)
 
     TemplateBuilder.build(new_state)
+    Reloader.reload
     {:noreply, new_state}
   end
 
