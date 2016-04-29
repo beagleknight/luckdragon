@@ -83,8 +83,6 @@ defmodule Luckdragon.DockerCloud.Api do
   end
 
   defp request(url) do
-    IO.puts "Using API Key: #{@api_key}"
-    IO.puts "Request to #{url}..."
     case HTTPoison.get("#{@api_address}#{url}", [
       "Authorization": @api_key, 
       "Accept": "application/json"
