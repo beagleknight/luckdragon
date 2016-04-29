@@ -3,6 +3,8 @@ defmodule Luckdragon.TemplateBuilder do
   @out_file "/etc/nginx/nginx.conf"
 
   def build(servers) do
+    File.mkdir_p "/etc/nginx"
+
     case File.read @src_file do
       {:ok, content} ->
         case File.open @out_file, [:write] do
