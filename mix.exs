@@ -3,6 +3,7 @@ defmodule Luckdragon.Mixfile do
 
   def project do
     [app: :luckdragon,
+     escript: escript_config,
      version: "0.0.1",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
@@ -14,7 +15,7 @@ defmodule Luckdragon.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :httpoison]]
+    [applications: [:logger, :httpoison, :eex]]
   end
 
   # Dependencies can be Hex packages:
@@ -31,6 +32,12 @@ defmodule Luckdragon.Mixfile do
       {:poison, "~> 2.0"},
       {:httpoison, "~> 0.8.0"},
       {:socket, github: 'beagleknight/elixir-socket', branch: 'connect-custom-headers'}
+    ]
+  end
+
+  defp escript_config do
+    [
+      main_module: Luckdragon.CLI
     ]
   end
 end
